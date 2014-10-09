@@ -7,9 +7,16 @@
     tools:ignore="MergeRootFrame">
 
     <fragment
-        class="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/fragment_map"
+        class="com.commandapps.helloworldmap.fragments.LocationMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="200dp"/>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.commandapps.helloworldmap.fragments.OfficeLocationFragment"
+        android:layout_below="@+id/fragment_map"/>
 
 
 </RelativeLayout>

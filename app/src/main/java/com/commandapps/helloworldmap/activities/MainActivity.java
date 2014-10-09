@@ -1,4 +1,4 @@
-package com.commandapps.helloworldmap;
+package com.commandapps.helloworldmap.activities;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -11,6 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.commandapps.helloworldmap.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class MainActivity extends Activity {
