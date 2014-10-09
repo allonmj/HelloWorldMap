@@ -1,0 +1,16 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.OfficeLocationDetailsFragment">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/civ_office"
+        android:layout_width="@dimen/office_image_size"
+        android:layout_height="@dimen/office_image_size"
+        android:src="@drawable/ic_launcher"
+        app:border_width="2dp"
+        app:border_color="#FF000000"/>
+
+</FrameLayout>

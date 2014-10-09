@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 public class OfficeLocation implements Parcelable {
 
+    public static final String TAG = "OFFICE_LOCATION";
+
     private String name;
     private String address;
 
@@ -51,7 +53,7 @@ public class OfficeLocation implements Parcelable {
         return longitude;
     }
 
-    public String getOffice_image() {
+    public String getOfficeImageUrl() {
         return office_image;
     }
 

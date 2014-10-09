@@ -3,14 +3,17 @@ package com.commandapps.helloworldmap.fragments;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.commandapps.helloworldmap.OfficeLocationAdapter;
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
-import com.commandapps.helloworldmap.model.DummyContent;
+import com.commandapps.helloworldmap.R;
 import com.commandapps.helloworldmap.model.OfficeLocation;
 
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
     private String mParam2;
     private OfficeLocationAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
+    private OfficeLocationSelectedListener mListener;
 
     // TODO: Rename and change types of parameters
     public static OfficeLocationFragment newInstance(String param1, String param2) {
@@ -39,6 +42,13 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        inflater.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.fragment_office_locations, container);
+        return view;
     }
 
     @Override
@@ -55,6 +65,7 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
     public OfficeLocationFragment() {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +76,7 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
         }
 
         // TODO: Change Adapter to display your content
-        adapter  = new OfficeLocationAdapter(getActivity(), 0, new ArrayList<OfficeLocation>());
+        adapter = new OfficeLocationAdapter(getActivity(), 0, new ArrayList<OfficeLocation>());
         setListAdapter(adapter);
     }
 
@@ -73,12 +84,12 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                + " must implement OnFragmentInteractionListener");
-//        }
+        try {
+            mListener = (OfficeLocationSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -95,7 +106,7 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onOfficeLocationSelected(adapter.getItem(position));
         }
     }
 
@@ -116,9 +127,8 @@ public class OfficeLocationFragment extends ListFragment implements LoaderManage
 
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+    public interface OfficeLocationSelectedListener {
+        public void onOfficeLocationSelected(OfficeLocation officeLocation);
     }
 
 }

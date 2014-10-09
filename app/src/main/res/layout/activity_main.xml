@@ -6,17 +6,30 @@
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame">
 
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:panelHeight="@dimen/bottom_panel_height"
+        sothree:shadowHeight="4dp">
+
     <fragment
         android:id="@+id/fragment_map"
         class="com.commandapps.helloworldmap.fragments.LocationMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:gravity="center"
+        android:layout_height="match_parent"/>
 
     <fragment
         android:layout_width="match_parent"
+        android:gravity="center|top"
         android:layout_height="match_parent"
         class="com.commandapps.helloworldmap.fragments.OfficeLocationFragment"
         android:layout_below="@+id/fragment_map"/>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 </RelativeLayout>

@@ -1,40 +1,35 @@
 package com.commandapps.helloworldmap.activities;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-
 import com.commandapps.helloworldmap.R;
-import com.commandapps.helloworldmap.fragments.OfficeLocationFragment;
+import com.commandapps.helloworldmap.fragments.OfficeLocationDetailsFragment;
 import com.commandapps.helloworldmap.model.OfficeLocation;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
+public class DetailsActivity extends Activity implements OfficeLocationDetailsFragment.OfficeLocationDetailsProvider{
 
-public class MainActivity extends Activity implements OfficeLocationFragment.OfficeLocationSelectedListener {
+    private OfficeLocation officeLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_details);
+        Intent intent = getIntent();
+        if (intent!=null && intent.hasExtra(OfficeLocation.TAG)) {
+            officeLocation = intent.getParcelableExtra(OfficeLocation.TAG);
+            OfficeLocationDetailsFragment officeLocationDetailsFragment = (OfficeLocationDetailsFragment) getFragmentManager().findFragmentById(R.id.fragment_office_location_details);
+            officeLocationDetailsFragment.updateView(officeLocation);
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.details, menu);
         return true;
     }
 
@@ -51,9 +46,7 @@ public class MainActivity extends Activity implements OfficeLocationFragment.Off
     }
 
     @Override
-    public void onOfficeLocationSelected(OfficeLocation officeLocation) {
-        Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra(OfficeLocation.TAG, officeLocation);
-        startActivity(intent);
+    public OfficeLocation getOfficeLocation() {
+        return officeLocation;
     }
 }
