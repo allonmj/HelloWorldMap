@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.commandapps.helloworldmap.DistanceUtils;
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
 import com.commandapps.helloworldmap.R;
 import com.commandapps.helloworldmap.StorageUtil;

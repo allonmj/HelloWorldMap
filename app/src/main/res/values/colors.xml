@@ -5,4 +5,5 @@
     <color name="hw_grey_light">#A7A7A7</color>
     <color name="hw_grey_dark">#555555</color>
     <color name="hw_black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -5,17 +5,19 @@
     android:layout_height="match_parent"
     tools:context="com.commandapps.helloworldmap.activities.DetailsActivity">
 
+
+    <fragment
+        android:id="@+id/fragment_static_map"
+        class="com.commandapps.helloworldmap.fragments.StaticLocationMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/static_map_height" />
+
     <fragment
         android:id="@+id/fragment_office_location_details"
         class="com.commandapps.helloworldmap.fragments.OfficeLocationDetailsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fragment_static_map" />
 
-    <fragment
-        android:id="@+id/fragment_map"
-        class="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/fragment_office_location_details" />
 
 </RelativeLayout>

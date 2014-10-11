@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the theme applied to the application or activity -->
+    <style name="HelloWorldTheme"
+        parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/HWActionBar</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="HWActionBar"
+        parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:titleTextStyle">@style/HWActionBarTitleText</item>
+        <item name="android:background">@color/hw_orange</item>
+    </style>
+
+    <!-- ActionBar title text -->
+    <style name="HWActionBarTitleText"
+        parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+
+</resources>

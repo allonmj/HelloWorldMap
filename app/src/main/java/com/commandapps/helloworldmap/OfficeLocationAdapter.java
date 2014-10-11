@@ -17,17 +17,11 @@ import java.util.List;
  */
 public class OfficeLocationAdapter extends ArrayAdapter<OfficeLocation> {
     private final Context context;
-    private Location userLocation;
 
     public OfficeLocationAdapter(Context context, int resource, List<OfficeLocation> objects) {
         super(context, resource, objects);
         this.context = context;
     }
-
-    public void setUserLocation(Location userLocation){
-        this.userLocation = userLocation;
-    }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -39,11 +33,12 @@ public class OfficeLocationAdapter extends ArrayAdapter<OfficeLocation> {
         OfficeLocation officeLocation = getItem(position);
         tvAddress.setText(officeLocation.getAddress());
         tvName.setText(officeLocation.getName());
-        if (userLocation!=null){
-            float metersDistance = DistanceUtils.calculateDistanceMeters(officeLocation, userLocation);
-            tvDistance.setText(DistanceUtils.metersToMiles(metersDistance) + " mi");
-
+        float lastKnownLocation = officeLocation.getLastKnownDistance();
+        if (lastKnownLocation > 0) {
+            double miles = DistanceUtils.metersToMiles(lastKnownLocation);
+            tvDistance.setText(miles + " mi");
         }
+
 
         return rowView;
     }

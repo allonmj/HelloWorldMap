@@ -6,12 +6,31 @@ import android.os.Parcelable;
 /**
  * Created by Michael on 10/8/2014.
  */
-public class OfficeLocation implements Parcelable {
+public class OfficeLocation implements Parcelable, Comparable<OfficeLocation> {
 
     public static final String TAG = "OFFICE_LOCATION";
 
     private String name;
     private String address;
+    private String address2;
+    private String city;
+
+    private String state;
+    private String zip_postal_code;
+    private String phone;
+    private String fax;
+    private String latitude;
+    private String longitude;
+    private String office_image;
+    private float lastKnownDistance;
+
+    public float getLastKnownDistance() {
+        return lastKnownDistance;
+    }
+
+    public void setLastKnownDistance(float lastKnownDistance) {
+        this.lastKnownDistance = lastKnownDistance;
+    }
 
     public String getName() {
         return name;
@@ -57,16 +76,8 @@ public class OfficeLocation implements Parcelable {
         return office_image;
     }
 
-    private String address2;
-    private String city;
-    private String state;
-    private String zip_postal_code;
-    private String phone;
-    private String fax;
-    private String latitude;
-    private String longitude;
-    private String office_image;
-
+    public OfficeLocation() {
+    }
 
     @Override
     public int describeContents() {
@@ -86,9 +97,7 @@ public class OfficeLocation implements Parcelable {
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
         dest.writeString(this.office_image);
-    }
-
-    public OfficeLocation() {
+        dest.writeFloat(this.lastKnownDistance);
     }
 
     private OfficeLocation(Parcel in) {
@@ -103,9 +112,10 @@ public class OfficeLocation implements Parcelable {
         this.latitude = in.readString();
         this.longitude = in.readString();
         this.office_image = in.readString();
+        this.lastKnownDistance = in.readFloat();
     }
 
-    public static final Parcelable.Creator<OfficeLocation> CREATOR = new Parcelable.Creator<OfficeLocation>() {
+    public static final Creator<OfficeLocation> CREATOR = new Creator<OfficeLocation>() {
         public OfficeLocation createFromParcel(Parcel source) {
             return new OfficeLocation(source);
         }
@@ -114,4 +124,17 @@ public class OfficeLocation implements Parcelable {
             return new OfficeLocation[size];
         }
     };
+
+    @Override
+    public int compareTo(OfficeLocation officeLocation) {
+        float lastKnownDistance = this.getLastKnownDistance();
+        float otherLastKnowDistance = officeLocation.getLastKnownDistance();
+        if (lastKnownDistance > otherLastKnowDistance) {
+            return 1;
+        } else if (lastKnownDistance < otherLastKnowDistance) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }

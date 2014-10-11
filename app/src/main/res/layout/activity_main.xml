@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/fragment_map"
-        class="com.commandapps.helloworldmap.fragments.LocationMapFragment"
+        class="com.commandapps.helloworldmap.fragments.LocationsMapFragment"
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_height="match_parent"/>

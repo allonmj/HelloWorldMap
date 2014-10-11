@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.commandapps.helloworldmap.DistanceUtils;
 import com.commandapps.helloworldmap.OfficeLocationAdapter;
 import com.commandapps.helloworldmap.R;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsChangedListener;
@@ -19,6 +20,7 @@ import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -80,10 +82,7 @@ public class OfficeLocationListFragment extends ListFragment implements OfficeLo
         }
 
         adapter = new OfficeLocationAdapter(getActivity(), 0, new ArrayList<OfficeLocation>());
-        if (null != userLocation){
-            adapter.setUserLocation(userLocation);
-        }
-        if (null != officeLocations){
+        if (null != officeLocations) {
             adapter.addAll(officeLocations);
         }
         setListAdapter(adapter);
@@ -128,7 +127,10 @@ public class OfficeLocationListFragment extends ListFragment implements OfficeLo
     @Override
     public void onOfficeLocationsChanged(List<OfficeLocation> officeLocations) {
         this.officeLocations = officeLocations;
-        if (adapter!=null) {
+        if (userLocation!=null){
+            updateOfficeLocations(userLocation);
+        }
+        if (adapter != null) {
             adapter.clear();
             adapter.addAll(officeLocations);
             adapter.notifyDataSetChanged();
@@ -137,10 +139,20 @@ public class OfficeLocationListFragment extends ListFragment implements OfficeLo
 
     @Override
     public void onUserLocationChanged(Location userLocation) {
+        if (officeLocations!=null) {
+            updateOfficeLocations(userLocation);
+        }
         this.userLocation = userLocation;
-        if (adapter!=null) {
-            adapter.setUserLocation(userLocation);
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void updateOfficeLocations(Location userLocation){
+        for (OfficeLocation officeLocation : officeLocations) {
+            float metersDistance = DistanceUtils.calculateDistanceMeters(officeLocation, userLocation);
+            officeLocation.setLastKnownDistance(metersDistance);
+        }
+        Collections.sort(officeLocations);
     }
 }
