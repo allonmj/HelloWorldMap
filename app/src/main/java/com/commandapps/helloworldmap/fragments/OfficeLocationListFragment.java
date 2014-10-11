@@ -79,7 +79,6 @@ public class OfficeLocationListFragment extends ListFragment implements OfficeLo
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // TODO: Change Adapter to display your content
         adapter = new OfficeLocationAdapter(getActivity(), 0, new ArrayList<OfficeLocation>());
         if (null != userLocation){
             adapter.setUserLocation(userLocation);

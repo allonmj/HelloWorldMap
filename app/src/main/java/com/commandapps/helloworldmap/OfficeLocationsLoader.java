@@ -2,7 +2,6 @@ package com.commandapps.helloworldmap;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.util.Log;
 
 import com.commandapps.helloworldmap.model.OfficeLocation;
 import com.commandapps.helloworldmap.model.OfficeLocations;
@@ -19,13 +18,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Michael on 10/8/2014.
  */
 public class OfficeLocationsLoader extends AsyncTaskLoader<List<OfficeLocation>> {
+
+    private static final String URL = "http://www.helloworld.com/helloworld_locations.json";
 
     public OfficeLocationsLoader(Context context) {
         super(context);
@@ -34,19 +34,23 @@ public class OfficeLocationsLoader extends AsyncTaskLoader<List<OfficeLocation>>
     @Override
     public List<OfficeLocation> loadInBackground() {
 
-        // even if fail return empty list and print exception stack trace
         List<OfficeLocation> result = new ArrayList<OfficeLocation>();
 
-        // Do not use HttpClient, see http://android-developers.blogspot.com/2011/09/androids-http-clients.html
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("http://www.helloworld.com/helloworld_locations.json").openConnection();
-            // by default it's a GET request
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(URL).openConnection();
             try {
                 InputStream input = new BufferedInputStream(httpURLConnection.getInputStream());
                 String jsonResponse = streamToString(input);
-                Log.d("REST_LOG", "response: " + jsonResponse);
                 Gson gson = new Gson();
                 OfficeLocations officeLocations = gson.fromJson(jsonResponse, OfficeLocations.class);
+                /**
+                 * Saving list for offline viewing.  We're just saving to shared prefs,
+                 * since this is a very small and simple list.  If there were more complex data
+                 * we would want to use sqlite
+                 */
+                if (jsonResponse != null) {
+                    StorageUtil.saveStringToPreferences(getContext(), StorageUtil.OFFICE_LOCATION_JSON_TAG, jsonResponse);
+                }
                 result.addAll(Arrays.asList(officeLocations.getLocations()));
 
             } finally {

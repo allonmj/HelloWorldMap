@@ -12,16 +12,20 @@ import android.view.MenuItem;
 import com.commandapps.helloworldmap.DistanceUtils;
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
 import com.commandapps.helloworldmap.R;
+import com.commandapps.helloworldmap.StorageUtil;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsChangedListener;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsProvider;
 import com.commandapps.helloworldmap.interfaces.UserLocationListener;
 import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
+import com.commandapps.helloworldmap.model.OfficeLocations;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -111,6 +115,13 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
 
     @Override
     public void onLoadFinished(Loader<List<OfficeLocation>> listLoader, List<OfficeLocation> officeLocations) {
+        if (officeLocations.isEmpty()){
+            // check if we have office location data in shared prefs.
+            String officeLocationsStr = StorageUtil.getStringFromPreferences(this, StorageUtil.OFFICE_LOCATION_JSON_TAG);
+            Gson gson = new Gson();
+            OfficeLocations locs = gson.fromJson(officeLocationsStr, OfficeLocations.class);
+            officeLocations = Arrays.asList(locs.getLocations());
+        }
         this.officeLocations = officeLocations;
         notifyOfficeLocationsChanged();
     }

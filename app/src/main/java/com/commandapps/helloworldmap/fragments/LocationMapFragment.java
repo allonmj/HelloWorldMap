@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 
+import com.commandapps.helloworldmap.ScreenUtil;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsChangedListener;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsProvider;
 import com.commandapps.helloworldmap.interfaces.UserLocationListener;
@@ -67,8 +68,13 @@ public class LocationMapFragment extends MapFragment implements OfficeLocationsC
             Marker marker = map.addMarker(createmarkerOptions(officeLocation));
             markers.add(marker);
         }
-        LatLngBounds latLngBounds = calculateLatLngBounds(markers);
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, markerPadding));
+        if (markers.size() > 0) {
+            LatLngBounds latLngBounds = calculateLatLngBounds(markers);
+            int width = ScreenUtil.getScreenWidth(getActivity());
+            int height = ScreenUtil.getScreenHeight(getActivity());
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, width, height, markerPadding));
+
+        }
 
     }
 
