@@ -3,5 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="bottom_panel_height">60dp</dimen>
-    <dimen name="office_image_size">120dp</dimen>
+    <dimen name="office_image_size">200dp</dimen>
+    <dimen name="row_office_location_height">100dp</dimen>
+    <dimen name="text_padding_medium">10dp</dimen>
+    <dimen name="text_padding_small">5dp</dimen>
+    <dimen name="text_size_medium">16dp</dimen>
+
 </resources>

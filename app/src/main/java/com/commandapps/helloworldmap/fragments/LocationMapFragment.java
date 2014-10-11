@@ -7,10 +7,9 @@ import android.view.View;
 
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsChangedListener;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsProvider;
+import com.commandapps.helloworldmap.interfaces.UserLocationListener;
+import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -25,32 +24,24 @@ import java.util.List;
 /**
  * Created by Michael on 10/8/2014.
  */
-public class LocationMapFragment extends MapFragment implements OfficeLocationsChangedListener,
-        GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener{
+public class LocationMapFragment extends MapFragment implements OfficeLocationsChangedListener, UserLocationListener {
 
-    private LocationClient locationClient;
-    private Location currentLocation;
-    private OfficeLocationsProvider mListener;
+    private OfficeLocationsProvider officeLocationsProvider;
+    private UserLocationProvider userLocationProvider;
     private int markerPadding = 100;
-
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        locationClient = new LocationClient(getActivity(), this, this);
-        locationClient.connect();
-
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OfficeLocationsProvider) activity;
-            mListener.addOfficeLocationsChangedListener(this);
+            officeLocationsProvider = (OfficeLocationsProvider) activity;
+            officeLocationsProvider.addOfficeLocationsChangedListener(this);
+            userLocationProvider = (UserLocationProvider) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -60,75 +51,19 @@ public class LocationMapFragment extends MapFragment implements OfficeLocationsC
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener.removeOfficeLocationsChangedListener(this);
-        mListener = null;
+        officeLocationsProvider.removeOfficeLocationsChangedListener(this);
+        userLocationProvider.removeUserLocationListener(this);
+        officeLocationsProvider = null;
+        officeLocationsProvider = null;
     }
 
-    @Override
-    public void onStop() {
-        locationClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        currentLocation = locationClient.getLastLocation();
-
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
- /*
-         * Google Play services can resolve some errors it detects.
-         * If the error has a resolution, try sending an Intent to
-         * start a Google Play services activity that can resolve
-         * error.
-         */
-        if (connectionResult.hasResolution()) {
-//            try {
-//                // Start an Activity that tries to resolve the error
-////                connectionResult.startResolutionForResult(
-////                        this,
-////                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-//                /*
-//                 * Thrown if Google Play services canceled the original
-//                 * PendingIntent
-//                 */
-//            } catch (IntentSender.SendIntentException e) {
-//                // Log the error
-//                e.printStackTrace();
-//            }
-        } else {
-            /*
-             * If no resolution is available, display a dialog to the
-             * user with the error.
-             */
-//            showErrorDialog(connectionResult.getErrorCode());
-        }
-    }
 
     @Override
     public void onOfficeLocationsChanged(List<OfficeLocation> officeLocations) {
         GoogleMap map = getMap();
-        double latitude = currentLocation.getLatitude();
-        double longitude = currentLocation.getLongitude();
-        LatLng userLatLng = new LatLng(latitude, longitude);
-
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 13));
-
-        map.addMarker(new MarkerOptions()
-                .title("Sydney")
-                .snippet("The most populous city in Australia.")
-                .position(userLatLng));
 
         List<Marker> markers = new ArrayList<Marker>();
-        for (OfficeLocation officeLocation : officeLocations){
+        for (OfficeLocation officeLocation : officeLocations) {
             Marker marker = map.addMarker(createmarkerOptions(officeLocation));
             markers.add(marker);
         }
@@ -137,19 +72,24 @@ public class LocationMapFragment extends MapFragment implements OfficeLocationsC
 
     }
 
-    private MarkerOptions createmarkerOptions(OfficeLocation officeLocation){
+    private MarkerOptions createmarkerOptions(OfficeLocation officeLocation) {
         double lat = Double.parseDouble(officeLocation.getLatitude());
         double lng = Double.parseDouble(officeLocation.getLongitude());
         LatLng markerPosition = new LatLng(lat, lng);
         return new MarkerOptions().title(officeLocation.getName()).snippet(officeLocation.getAddress()).position(markerPosition);
     }
 
-    private LatLngBounds calculateLatLngBounds(List<Marker> markers){
+    private LatLngBounds calculateLatLngBounds(List<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers){
+        for (Marker marker : markers) {
             builder.include(marker.getPosition());
         }
         return builder.build();
+
+    }
+
+    @Override
+    public void onUserLocationChanged(Location userLocation) {
 
     }
 }

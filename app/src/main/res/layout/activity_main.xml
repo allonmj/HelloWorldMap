@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:gravity="center|top"
         android:layout_height="match_parent"
-        class="com.commandapps.helloworldmap.fragments.OfficeLocationFragment"
+        class="com.commandapps.helloworldmap.fragments.OfficeLocationListFragment"
         android:layout_below="@+id/fragment_map"/>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>

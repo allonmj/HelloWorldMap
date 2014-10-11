@@ -5,4 +5,14 @@
         <!-- Customize your theme here. -->
     </style>
 
+
+    <style name="HWText">
+        <item name="android:textColor">@color/hw_black</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="HWText.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

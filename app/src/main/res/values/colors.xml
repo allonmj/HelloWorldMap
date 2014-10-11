@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hw_blue">#0088C7</color>
+    <color name="hw_orange">#FF500E</color>
+    <color name="hw_grey_light">#A7A7A7</color>
+    <color name="hw_grey_dark">#555555</color>
+    <color name="hw_black">#000000</color>
+</resources>

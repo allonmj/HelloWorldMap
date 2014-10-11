@@ -2,26 +2,27 @@ package com.commandapps.helloworldmap.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import com.commandapps.helloworldmap.DistanceUtils;
 import com.commandapps.helloworldmap.R;
+import com.commandapps.helloworldmap.interfaces.OfficeLocationChangedListener;
+import com.commandapps.helloworldmap.interfaces.OfficeLocationProvider;
+import com.commandapps.helloworldmap.interfaces.UserLocationListener;
+import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
+import com.commandapps.helloworldmap.views.LocationRowView;
 import com.squareup.picasso.Picasso;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link com.commandapps.helloworldmap.fragments.OfficeLocationDetailsFragment.OfficeLocationDetailsProvider} interface
- * to handle interaction events.
- * Use the {@link OfficeLocationDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class OfficeLocationDetailsFragment extends Fragment {
+public class OfficeLocationDetailsFragment extends Fragment implements OfficeLocationChangedListener, UserLocationListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,8 +32,10 @@ public class OfficeLocationDetailsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OfficeLocationDetailsProvider mListener;
+    private OfficeLocationProvider officeLocationProvider;
+    private UserLocationProvider userLocationProvider;
     private OfficeLocation officeLocation;
+    private Location userLocation;
 
     /**
      * Use this factory method to create a new instance of
@@ -75,51 +78,87 @@ public class OfficeLocationDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OfficeLocationDetailsProvider) activity;
-//            officeLocation = mListener.getOfficeLocation();
-//            View view = getView();
-//            if (view != null) {
-//                updateView(view, officeLocation);
-//            }
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        try {
+            officeLocationProvider = (OfficeLocationProvider) activity;
+            officeLocationProvider.addOfficeLocationChangedListener(this);
+            userLocationProvider = (UserLocationProvider) activity;
+            userLocationProvider.addUserLocationListener(this);
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
-    public void updateView(OfficeLocation officeLocation) {
+    public void updateView(final OfficeLocation officeLocation) {
         View view = getView();
-        if (view!=null) {
-            CircleImageView civ_office = (CircleImageView) view.findViewById(R.id.civ_office);
+        if (view != null) {
+            ImageView civ_office = (ImageView) view.findViewById(R.id.civ_office);
             Picasso.with(getActivity()).load(officeLocation.getOfficeImageUrl()).into(civ_office);
+            LocationRowView locationRowView = (LocationRowView) view.findViewById(R.id.cv_location);
+            locationRowView.setName(officeLocation.getName());
+            locationRowView.setAddress(officeLocation.getAddress());
+            if (userLocation!=null) {
+                float metersDistance = DistanceUtils.calculateDistanceMeters(officeLocation, userLocation);
+                locationRowView.setDistance(DistanceUtils.metersToMiles(metersDistance) + " mi");
+            }
+
+            Button directions = (Button) view.findViewById(R.id.buttonDirections);
+            Button phoneCall = (Button) view.findViewById(R.id.buttonCall);
+            phoneCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchDialer(officeLocation.getPhone());
+                }
+            });
+            directions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchDirections(officeLocation.getAddress());
+                }
+            });
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        officeLocationProvider.removeOfficeLocationChangedListener(this);
+        userLocationProvider.removeUserLocationListener(this);
+        userLocationProvider = null;
+        officeLocationProvider = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OfficeLocationDetailsProvider {
-        public OfficeLocation getOfficeLocation();
+    @Override
+    public void onOfficeLocationChanged(OfficeLocation officeLocation) {
+        this.officeLocation = officeLocation;
+        updateView(officeLocation);
     }
 
+    private void launchDialer(String phoneNumber){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+    }
+
+    private void launchDirections(String address){
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+address));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onUserLocationChanged(Location userLocation) {
+        this.userLocation = userLocation;
+        if (getView()!=null && officeLocation!=null) {
+            float metersDistance = DistanceUtils.calculateDistanceMeters(officeLocation, userLocation);
+            LocationRowView locationRowView = (LocationRowView) getView().findViewById(R.id.cv_location);
+            locationRowView.setDistance(DistanceUtils.metersToMiles(metersDistance) + " mi");
+        }
+
+    }
 }

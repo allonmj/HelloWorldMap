@@ -1,16 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.OfficeLocationDetailsFragment">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/civ_office"
-        android:layout_width="@dimen/office_image_size"
-        android:layout_height="@dimen/office_image_size"
-        android:src="@drawable/ic_launcher"
-        app:border_width="2dp"
-        app:border_color="#FF000000"/>
+    <com.commandapps.helloworldmap.views.LocationRowView
+        android:id="@+id/cv_location"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="10dp" />
 
-</FrameLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/cv_location"
+        android:layout_height="wrap_content"
+        android:text="call"
+        android:id="@+id/buttonCall"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/buttonCall"
+        android:layout_below="@+id/cv_location"
+        android:text="directions"
+        android:id="@+id/buttonDirections"/>
+    <ImageView
+        android:id="@+id/civ_office"
+        android:layout_below="@+id/buttonDirections"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/office_image_size"
+        android:src="@drawable/ic_launcher"/>
+
+</RelativeLayout>

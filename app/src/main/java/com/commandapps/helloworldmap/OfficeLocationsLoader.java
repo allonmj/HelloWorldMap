@@ -34,8 +34,6 @@ public class OfficeLocationsLoader extends AsyncTaskLoader<List<OfficeLocation>>
     @Override
     public List<OfficeLocation> loadInBackground() {
 
-        Log.d("REST_LOG", "load in br");
-
         // even if fail return empty list and print exception stack trace
         List<OfficeLocation> result = new ArrayList<OfficeLocation>();
 

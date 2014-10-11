@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LocationRowView">
+        <attr name="name" format="string" />
+        <attr name="address" format="string" />
+        <attr name="distanceLabel" format="string" />
+        <attr name="distance" format="string" />
+    </declare-styleable>
+
+</resources>

@@ -4,33 +4,51 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.commandapps.helloworldmap.DistanceUtils;
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
 import com.commandapps.helloworldmap.R;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsChangedListener;
 import com.commandapps.helloworldmap.interfaces.OfficeLocationsProvider;
+import com.commandapps.helloworldmap.interfaces.UserLocationListener;
+import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity implements OfficeLocationsProvider, LoaderManager.LoaderCallbacks<List<OfficeLocation>> {
+public class MainActivity extends Activity implements OfficeLocationsProvider, UserLocationProvider, LoaderManager.LoaderCallbacks<List<OfficeLocation>>, GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener {
 
     private ArrayList<OfficeLocationsChangedListener> officeLocationsChangedListeners;
+    private ArrayList<UserLocationListener> userLocationListeners;
     private List<OfficeLocation> officeLocations;
+
+    private LocationClient locationClient;
+    private Location userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        locationClient = new LocationClient(this, this, this);
         getLoaderManager().initLoader(0, null, this).forceLoad();
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationClient.connect();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,26 +73,33 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, L
     public void onOfficeLocationSelected(OfficeLocation officeLocation) {
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra(OfficeLocation.TAG, officeLocation);
+        if (null != userLocation) {
+            intent.putExtra("USER_LOCATION", userLocation);
+        }
         startActivity(intent);
     }
 
     @Override
-    public void addOfficeLocationsChangedListener(OfficeLocationsChangedListener listener){
-        if (null == officeLocationsChangedListeners){
+    public void addOfficeLocationsChangedListener(OfficeLocationsChangedListener listener) {
+        if (null == officeLocationsChangedListeners) {
             officeLocationsChangedListeners = new ArrayList<OfficeLocationsChangedListener>();
         }
         officeLocationsChangedListeners.add(listener);
+        if (officeLocations != null) {
+            // immediately return the office locations if available
+            listener.onOfficeLocationsChanged(officeLocations);
+        }
     }
 
     @Override
-    public void removeOfficeLocationsChangedListener(OfficeLocationsChangedListener listener){
-        if (null != officeLocationsChangedListeners){
+    public void removeOfficeLocationsChangedListener(OfficeLocationsChangedListener listener) {
+        if (null != officeLocationsChangedListeners) {
             officeLocationsChangedListeners.remove(listener);
         }
     }
 
-    private void notifyOfficeLocationsChanged(){
-        for (OfficeLocationsChangedListener listener : officeLocationsChangedListeners){
+    private void notifyOfficeLocationsChanged() {
+        for (OfficeLocationsChangedListener listener : officeLocationsChangedListeners) {
             listener.onOfficeLocationsChanged(officeLocations);
         }
     }
@@ -95,4 +120,75 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, L
 
     }
 
+    @Override
+    public void onStop() {
+        locationClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        userLocation = locationClient.getLastLocation();
+        notifyUserLocationChanged();
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+ /*
+         * Google Play services can resolve some errors it detects.
+         * If the error has a resolution, try sending an Intent to
+         * start a Google Play services activity that can resolve
+         * error.
+         */
+        if (connectionResult.hasResolution()) {
+//            try {
+//                // Start an Activity that tries to resolve the error
+////                connectionResult.startResolutionForResult(
+////                        this,
+////                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+//                /*
+//                 * Thrown if Google Play services canceled the original
+//                 * PendingIntent
+//                 */
+//            } catch (IntentSender.SendIntentException e) {
+//                // Log the error
+//                e.printStackTrace();
+//            }
+        } else {
+            /*
+             * If no resolution is available, display a dialog to the
+             * user with the error.
+             */
+//            showErrorDialog(connectionResult.getErrorCode());
+        }
+    }
+
+    private void notifyUserLocationChanged() {
+        for (UserLocationListener listener : userLocationListeners) {
+            listener.onUserLocationChanged(userLocation);
+        }
+    }
+
+    @Override
+    public void addUserLocationListener(UserLocationListener listener) {
+        if (null == userLocationListeners) {
+            userLocationListeners = new ArrayList<UserLocationListener>();
+        }
+        userLocationListeners.add(listener);
+        if (userLocationListeners != null) {
+            listener.onUserLocationChanged(userLocation);
+        }
+    }
+
+    @Override
+    public void removeUserLocationListener(UserLocationListener listener) {
+        if (null != userLocationListeners) {
+            userLocationListeners.remove(listener);
+        }
+    }
 }
