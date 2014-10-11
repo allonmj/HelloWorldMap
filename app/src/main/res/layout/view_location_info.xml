@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@color/white"
+    android:padding="@dimen/card_spacing"
+    android:layout_height="@dimen/row_office_location_height">
 
-    <TextView
-        android:id="@+id/tvName"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:gravity="center"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvName"/>
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/HWText.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:id="@+id/tvDistanceLabel"
-        android:text="@string/distance"/>
+        <TextView
+            android:id="@+id/tvAddress"
+            style="@style/HWText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvName" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvDistanceLabel"
-        android:layout_alignParentRight="true"
-        android:id="@+id/tvDistance"/>
+        <TextView
+            android:id="@+id/tvDistanceLabel"
+            style="@style/HWText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/distance" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tvDistance"
+            style="@style/HWText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvDistanceLabel" />
+
+    </RelativeLayout>
+
+</FrameLayout>

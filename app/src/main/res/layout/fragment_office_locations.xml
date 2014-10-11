@@ -2,24 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:background="@color/hw_grey_light"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_bottom_panel"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="@dimen/bottom_panel_height">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/ivPanel"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_navigation_collapse"/>
 
         <TextView
             android:layout_width="wrap_content"
+            android:id="@+id/tvPanelLabel"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_below="@+id/ivPanel"
+            android:layout_centerHorizontal="true"
+            style="@style/HWText.bold"
             android:text="@string/locations"/>
     </RelativeLayout>
 
     <ListView
         android:id="@id/android:list"
+        android:layout_margin="@dimen/card_spacing"
+        android:dividerHeight="@dimen/card_spacing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_bottom_panel"
@@ -27,6 +39,7 @@
 
     <TextView
         android:id="@id/android:empty"
+        style="@style/HWText.bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_bottom_panel"

@@ -1,5 +1,6 @@
 package com.commandapps.helloworldmap.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
@@ -28,10 +29,14 @@ public class DetailsActivity extends Activity implements OfficeLocationProvider,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         if (intent != null) {
             if(intent.hasExtra(OfficeLocation.TAG)) {
                 officeLocation = intent.getParcelableExtra(OfficeLocation.TAG);
+                actionBar.setTitle(officeLocation.getName());
                 notifyOfficeLocationsChanged();
             }
             if (intent.hasExtra("USER_LOCATION")){

@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
 import com.commandapps.helloworldmap.R;
@@ -22,6 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.gson.Gson;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,17 +40,52 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
     private ArrayList<OfficeLocationsChangedListener> officeLocationsChangedListeners;
     private ArrayList<UserLocationListener> userLocationListeners;
     private List<OfficeLocation> officeLocations;
+    private OfficeLocationsLoader loader;
 
     private LocationClient locationClient;
     private Location userLocation;
+    private MenuItem refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
         locationClient = new LocationClient(this, this, this);
         getLoaderManager().initLoader(0, null, this).forceLoad();
+        SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        slidingPaneLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
 
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+                TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
+                tvPanelLabel.setText(getString(R.string.locations));
+                ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
+                ivPanel.setImageResource(R.drawable.ic_action_navigation_collapse);
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+                TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
+                tvPanelLabel.setText(getString(R.string.map));
+                ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
+                ivPanel.setImageResource(R.drawable.ic_action_navigation_expand);
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -57,6 +98,7 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        refreshButton = menu.findItem(R.id.action_refresh);
         return true;
     }
 
@@ -66,8 +108,15 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_refresh:
+                if (loader != null) {
+                    setProgressBarIndeterminateVisibility(Boolean.TRUE);
+                    loader.forceLoad();
+                }
+                break;
+            case R.id.action_settings:
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -109,12 +158,15 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
 
     @Override
     public Loader<List<OfficeLocation>> onCreateLoader(int i, Bundle bundle) {
-        return new OfficeLocationsLoader(this);
+        setProgressBarIndeterminateVisibility(Boolean.TRUE);
+        loader = new OfficeLocationsLoader(this);
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<OfficeLocation>> listLoader, List<OfficeLocation> officeLocations) {
-        if (officeLocations.isEmpty()){
+        setProgressBarIndeterminateVisibility(Boolean.FALSE);
+        if (officeLocations.isEmpty()) {
             // check if we have office location data in shared prefs.
             String officeLocationsStr = StorageUtil.getStringFromPreferences(this, StorageUtil.OFFICE_LOCATION_JSON_TAG);
             Gson gson = new Gson();
