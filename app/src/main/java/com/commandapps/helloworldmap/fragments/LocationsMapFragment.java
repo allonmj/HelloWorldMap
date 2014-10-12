@@ -96,7 +96,7 @@ public class LocationsMapFragment extends MapFragment implements OfficeLocations
         double lat = Double.parseDouble(officeLocation.getLatitude());
         double lng = Double.parseDouble(officeLocation.getLongitude());
         LatLng markerPosition = new LatLng(lat, lng);
-        return new MarkerOptions().title(officeLocation.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)).snippet(officeLocation.getAddress()).position(markerPosition);
+        return new MarkerOptions().title(officeLocation.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.hw_logo)).snippet(officeLocation.getAddress()).position(markerPosition);
     }
 
     private LatLngBounds calculateLatLngBounds(Map<Marker, OfficeLocation> markers) {

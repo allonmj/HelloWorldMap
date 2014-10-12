@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.commandapps.helloworldmap.model.OfficeLocation;
 import com.commandapps.helloworldmap.views.LocationRowView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 /**
@@ -26,20 +28,31 @@ public class OfficeLocationAdapter extends ArrayAdapter<OfficeLocation> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = new LocationRowView(context);
-        TextView tvAddress = (TextView) rowView.findViewById(R.id.tvAddress);
-        TextView tvName = (TextView) rowView.findViewById(R.id.tvName);
-        TextView tvDistance = (TextView) rowView.findViewById(R.id.tvDistance);
+        ViewHolder holder;
+        if (convertView == null){
+            convertView = new LocationRowView(context);
+            holder = new ViewHolder();
+            holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+            holder.tvAddress = (TextView) convertView.findViewById(R.id.tvAddress);
+            holder.tvDistance = (TextView) convertView.findViewById(R.id.tvDistance);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder) convertView.getTag();
+        }
         OfficeLocation officeLocation = getItem(position);
-        tvAddress.setText(officeLocation.getAddress());
-        tvName.setText(officeLocation.getName());
+        holder.tvAddress.setText(officeLocation.getAddress() + "\n" + officeLocation.getAddress2());
+        holder.tvName.setText(officeLocation.getName());
         float lastKnownLocation = officeLocation.getLastKnownDistance();
         if (lastKnownLocation > 0) {
             double miles = DistanceUtils.metersToMiles(lastKnownLocation);
-            tvDistance.setText(miles + " mi");
+            holder.tvDistance.setText(miles + " mi");
         }
 
 
-        return rowView;
+        return convertView;
+    }
+
+    private class ViewHolder{
+        TextView tvName, tvAddress, tvDistance;
     }
 }

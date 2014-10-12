@@ -18,6 +18,7 @@ import com.commandapps.helloworldmap.interfaces.OfficeLocationsProvider;
 import com.commandapps.helloworldmap.interfaces.UserLocationListener;
 import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,6 +102,8 @@ public class OfficeLocationListFragment extends ListFragment implements OfficeLo
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+
     }
 
     @Override

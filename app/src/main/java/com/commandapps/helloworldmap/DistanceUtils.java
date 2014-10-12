@@ -19,6 +19,13 @@ public class DistanceUtils {
         return Double.valueOf(twoDForm.format(miles));
     }
 
+    /**
+     * Calculates the straight line distance in meeters between an office location
+     * and a user location
+     * @param officeLocation
+     * @param userLocation
+     * @return
+     */
     public static float calculateDistanceMeters(OfficeLocation officeLocation, Location userLocation){
         Location targetLocation = new Location("");
         double lat = Double.parseDouble(officeLocation.getLatitude());

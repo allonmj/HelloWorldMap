@@ -19,6 +19,7 @@ import com.commandapps.helloworldmap.interfaces.OfficeLocationProvider;
 import com.commandapps.helloworldmap.interfaces.UserLocationListener;
 import com.commandapps.helloworldmap.interfaces.UserLocationProvider;
 import com.commandapps.helloworldmap.model.OfficeLocation;
+import com.commandapps.helloworldmap.views.ActionButtonView;
 import com.commandapps.helloworldmap.views.LocationRowView;
 import com.squareup.picasso.Picasso;
 
@@ -101,26 +102,11 @@ public class OfficeLocationDetailsFragment extends Fragment implements OfficeLoc
             Picasso.with(getActivity()).load(officeLocation.getOfficeImageUrl()).into(civ_office);
             LocationRowView locationRowView = (LocationRowView) view.findViewById(R.id.cv_location);
             locationRowView.setName(officeLocation.getName());
-            locationRowView.setAddress(officeLocation.getAddress());
+            locationRowView.setAddress(officeLocation.getAddress() + "\n" + officeLocation.getAddress2());
             if (userLocation!=null) {
                 float metersDistance = DistanceUtils.calculateDistanceMeters(officeLocation, userLocation);
                 locationRowView.setDistance(DistanceUtils.metersToMiles(metersDistance) + " mi");
             }
-
-            Button directions = (Button) view.findViewById(R.id.buttonDirections);
-            Button phoneCall = (Button) view.findViewById(R.id.buttonCall);
-            phoneCall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    launchDialer(officeLocation.getPhone());
-                }
-            });
-            directions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    launchDirections(officeLocation.getAddress());
-                }
-            });
         }
     }
 
@@ -137,18 +123,6 @@ public class OfficeLocationDetailsFragment extends Fragment implements OfficeLoc
     public void onOfficeLocationChanged(OfficeLocation officeLocation) {
         this.officeLocation = officeLocation;
         updateView(officeLocation);
-    }
-
-    private void launchDialer(String phoneNumber){
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        startActivity(intent);
-    }
-
-    private void launchDirections(String address){
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+address));
-        startActivity(intent);
     }
 
     @Override

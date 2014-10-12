@@ -1,23 +1,52 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.commandapps.helloworldmap.activities.DetailsActivity"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.commandapps.helloworldmap.activities.DetailsActivity">
+    android:fillViewport="true"
+    android:layout_height="match_parent">
 
-
-    <fragment
-        android:id="@+id/fragment_static_map"
-        class="com.commandapps.helloworldmap.fragments.StaticLocationMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/static_map_height" />
-
-    <fragment
-        android:id="@+id/fragment_office_location_details"
-        class="com.commandapps.helloworldmap.fragments.OfficeLocationDetailsFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fragment_static_map" />
+        android:background="@color/hw_grey_light">
 
 
-</RelativeLayout>
+        <fragment
+            android:id="@+id/fragment_static_map"
+            class="com.commandapps.helloworldmap.fragments.StaticLocationMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/static_map_height" />
+
+        <fragment
+            android:id="@+id/fragment_office_location_details"
+            class="com.commandapps.helloworldmap.fragments.OfficeLocationDetailsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/fragment_static_map" />
+
+
+        <com.commandapps.helloworldmap.views.ActionButtonView
+            android:id="@+id/buttonCall"
+            android:layout_width="@dimen/action_view_size"
+            android:layout_height="@dimen/action_view_size"
+            android:layout_marginLeft="@dimen/card_spacing"
+            android:layout_marginRight="@dimen/card_spacing"
+            android:layout_marginTop="@dimen/static_map_actions_height"
+            android:layout_toLeftOf="@+id/buttonDirections"
+            custom:action_src="@drawable/ic_action_device_access_call" />
+
+        <com.commandapps.helloworldmap.views.ActionButtonView
+            android:id="@+id/buttonDirections"
+            android:layout_width="@dimen/action_view_size"
+            android:layout_height="@dimen/action_view_size"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/card_spacing"
+            android:layout_marginRight="@dimen/card_spacing"
+            android:layout_marginTop="@dimen/static_map_actions_height"
+            custom:action_src="@drawable/ic_action_location_map" />
+
+
+    </RelativeLayout>
+</ScrollView>

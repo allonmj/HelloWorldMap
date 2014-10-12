@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.commandapps.helloworldmap.OfficeLocationsLoader;
 import com.commandapps.helloworldmap.R;
@@ -35,7 +35,7 @@ import java.util.List;
 
 
 public class MainActivity extends Activity implements OfficeLocationsProvider, UserLocationProvider, LoaderManager.LoaderCallbacks<List<OfficeLocation>>, GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener {
+        GooglePlayServicesClient.OnConnectionFailedListener, SlidingUpPanelLayout.PanelSlideListener {
 
     private ArrayList<OfficeLocationsChangedListener> officeLocationsChangedListeners;
     private ArrayList<UserLocationListener> userLocationListeners;
@@ -54,38 +54,7 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
         locationClient = new LocationClient(this, this, this);
         getLoaderManager().initLoader(0, null, this).forceLoad();
         SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        slidingPaneLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View view, float v) {
-
-            }
-
-            @Override
-            public void onPanelCollapsed(View view) {
-                TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
-                tvPanelLabel.setText(getString(R.string.locations));
-                ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
-                ivPanel.setImageResource(R.drawable.ic_action_navigation_collapse);
-            }
-
-            @Override
-            public void onPanelExpanded(View view) {
-                TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
-                tvPanelLabel.setText(getString(R.string.map));
-                ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
-                ivPanel.setImageResource(R.drawable.ic_action_navigation_expand);
-            }
-
-            @Override
-            public void onPanelAnchored(View view) {
-
-            }
-
-            @Override
-            public void onPanelHidden(View view) {
-
-            }
-        });
+        slidingPaneLayout.setPanelSlideListener(this);
     }
 
     @Override
@@ -115,8 +84,6 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
                     loader.forceLoad();
                 }
                 break;
-            case R.id.action_settings:
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -175,6 +142,20 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
         }
         this.officeLocations = officeLocations;
         notifyOfficeLocationsChanged();
+        // cheating here a little.  By now all fragments have probably loaded, so we can get their views.
+        setDragView();
+    }
+
+    /**
+     * Sets the drag view for the sliding up panel.  This will allow list view scrolling without accidentally closing
+     * the panel.
+     */
+    private void setDragView() {
+        SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        View dragView = findViewById(R.id.rl_bottom_panel);
+        if (null != slidingUpPanelLayout && null != dragView) {
+            slidingUpPanelLayout.setDragView(dragView);
+        }
     }
 
     @Override
@@ -201,33 +182,7 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
- /*
-         * Google Play services can resolve some errors it detects.
-         * If the error has a resolution, try sending an Intent to
-         * start a Google Play services activity that can resolve
-         * error.
-         */
-        if (connectionResult.hasResolution()) {
-//            try {
-//                // Start an Activity that tries to resolve the error
-////                connectionResult.startResolutionForResult(
-////                        this,
-////                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-//                /*
-//                 * Thrown if Google Play services canceled the original
-//                 * PendingIntent
-//                 */
-//            } catch (IntentSender.SendIntentException e) {
-//                // Log the error
-//                e.printStackTrace();
-//            }
-        } else {
-            /*
-             * If no resolution is available, display a dialog to the
-             * user with the error.
-             */
-//            showErrorDialog(connectionResult.getErrorCode());
-        }
+        Toast.makeText(this, getString(R.string.google_play_services_error), Toast.LENGTH_LONG).show();
     }
 
     private void notifyUserLocationChanged() {
@@ -251,6 +206,47 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
     public void removeUserLocationListener(UserLocationListener listener) {
         if (null != userLocationListeners) {
             userLocationListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void onPanelSlide(View view, float v) {
+
+    }
+
+    @Override
+    public void onPanelCollapsed(View view) {
+        TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
+        tvPanelLabel.setText(getString(R.string.locations));
+        ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
+        ivPanel.setImageResource(R.drawable.ic_action_navigation_collapse);
+    }
+
+    @Override
+    public void onPanelExpanded(View view) {
+        TextView tvPanelLabel = (TextView) view.findViewById(R.id.tvPanelLabel);
+        tvPanelLabel.setText(getString(R.string.map));
+        ImageView ivPanel = (ImageView) view.findViewById(R.id.ivPanel);
+        ivPanel.setImageResource(R.drawable.ic_action_navigation_expand);
+    }
+
+    @Override
+    public void onPanelAnchored(View view) {
+
+    }
+
+    @Override
+    public void onPanelHidden(View view) {
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        if (slidingUpPanelLayout.isPanelExpanded()){
+            slidingUpPanelLayout.collapsePanel();
+        }else{
+            super.onBackPressed();
         }
     }
 }
