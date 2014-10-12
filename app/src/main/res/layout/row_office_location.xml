@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvDistanceLabel"
             android:layout_alignParentRight="true"
+            android:text="@string/distance_unknown"
             android:padding="@dimen/text_padding_medium"/>
 
         <TextView

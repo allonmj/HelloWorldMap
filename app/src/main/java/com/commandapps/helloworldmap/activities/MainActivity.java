@@ -241,11 +241,11 @@ public class MainActivity extends Activity implements OfficeLocationsProvider, U
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        if (slidingUpPanelLayout.isPanelExpanded()){
+        if (slidingUpPanelLayout.isPanelExpanded()) {
             slidingUpPanelLayout.collapsePanel();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
